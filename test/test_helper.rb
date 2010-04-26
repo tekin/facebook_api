@@ -1,8 +1,10 @@
 require 'rubygems'
 require 'facebook_api'
-require "test/unit"
-require "shoulda"
-require "mocha"
+require 'test/unit'
+require 'mocha'
+require 'shoulda'
+require 'webmock/test_unit'
+include WebMock
 
 class Test::Unit::TestCase
 
@@ -18,5 +20,12 @@ class Test::Unit::TestCase
       "#{FacebookApi.config.api_key}_user" => '2901279',
       FacebookApi.config.api_key => 'ca4c37ea9d1dec12520bce945d1c3439',
       "fbsetting_#{FacebookApi.config.api_key}" => 'should-be-ignored' }
+  end
+
+  def mock_rest_response(body = '341341252346', code = 200)
+    response = mock
+    response.stubs(:body).returns(body)
+    response.stubs(:code).returns(code)
+    response
   end
 end

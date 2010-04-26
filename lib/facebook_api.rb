@@ -1,12 +1,19 @@
-require "logger"
-require "digest/sha2"
+require 'logger'
+require 'digest/sha2'
+require 'rest_client'
+ # TODO: Only need to load json if not already present, i.e. no ActiveSupport
+require 'json'
+
+require 'facebook_api/session'
 
 module FacebookApi
   class Configuration
     attr_accessor :api_key, :secret_key, :canvas_page_name, :callback_url
   end
 
-  REST_URL = "http://api.facebook.com/restserver.php"
+  REST_URL = 'http://api.facebook.com/restserver.php'
+  API_VERSION = '1.0'
+
   @config = Configuration.new
   @logger = nil
 
@@ -67,6 +74,12 @@ module FacebookApi
       pacific_zone.parse(time.strftime("%Y-%m-%d %H:%M:%S"))
     else
       time
+    end
+  end
+
+  class Error < StandardError
+    def initialize(error_msg, error_code = 1)
+      super("FacebookApi::Error #{error_code}: #{error_msg}" )
     end
   end
 end
