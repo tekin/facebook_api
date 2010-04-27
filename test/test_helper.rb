@@ -22,7 +22,15 @@ class Test::Unit::TestCase
       "fbsetting_#{FacebookApi.config.api_key}" => 'should-be-ignored' }
   end
 
-  def mock_rest_response(body = '341341252346', code = 200)
+  def stub_facebook_request(body = '12345', status = 200)
+    stub_request(:post, FacebookApi::REST_URL).to_return(:body => body, :status => status)
+  end
+
+  def expect_facebook_request(mocha_matcher)
+    RestClient.expects(:post).with(FacebookApi::REST_URL, mocha_matcher)
+  end
+
+  def stubbed_response(body = '341341252346', code = 200)
     response = mock
     response.stubs(:body).returns(body)
     response.stubs(:code).returns(code)

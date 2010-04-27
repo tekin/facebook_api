@@ -42,27 +42,27 @@ class TestSession < Test::Unit::TestCase
     context '#parse_facebook_json' do
 
       should 'parses valid JSON responses' do
-        assert_equal [10, 20, 30], @session.parse_facebook_json(mock_rest_response('[10,20,30]'))
-        assert_equal ({'key' => 'value'}), @session.parse_facebook_json(mock_rest_response('{"key": "value"}'))
+        assert_equal [10, 20, 30], @session.parse_facebook_json(stubbed_response('[10,20,30]'))
+        assert_equal ({'key' => 'value'}), @session.parse_facebook_json(stubbed_response('{"key": "value"}'))
       end
 
       should 'evaluate "true" response to true' do
-        assert_equal true, @session.parse_facebook_json(mock_rest_response('true'))
+        assert_equal true, @session.parse_facebook_json(stubbed_response('true'))
       end
 
       should 'evaluate "false" response to false' do
-        assert_equal false, @session.parse_facebook_json(mock_rest_response('false'))
+        assert_equal false, @session.parse_facebook_json(stubbed_response('false'))
       end
 
       should 'evaluate and return all other non-JSON literal responses as is' do
-        assert_equal '341341252346', @session.parse_facebook_json(mock_rest_response)
+        assert_equal '341341252346', @session.parse_facebook_json(stubbed_response('341341252346'))
       end
     end
 
 
     context '#call' do
       setup do
-        stub_request(:post, FacebookApi::REST_URL).to_return(:body => '[10,20,30]')
+        stub_facebook_request('[10,20,30]')
       end
 
       should 'send the prepared params as a post request to the Facebook REST url' do
@@ -82,14 +82,14 @@ class TestSession < Test::Unit::TestCase
         params = {}
         file = stub
         @session.expects(:prepare_params).with(:method => 'Photos.upload').returns(params)
-        RestClient.expects(:post).with(FacebookApi::REST_URL, {:method => 'Photos.upload', nil => file}).returns stub('response', :body => '123456')
+        expect_facebook_request({:method => 'Photos.upload', nil => file}).returns stubbed_response('123456')
         @session.call('Photos.upload', params, file)
       end
     end
 
     context '#call method when Facebook returns an error response' do
       setup do
-        stub_request(:post, FacebookApi::REST_URL).to_return(:body => '{"error_code":100,"error_msg":"Parameter properties is required."}')
+        stub_facebook_request('{"error_code":100,"error_msg":"Parameter properties is required."}')
       end
       should 'raise an exception if an error response is received from Facebook' do
         assert_raise FacebookApi::Error do
@@ -100,11 +100,11 @@ class TestSession < Test::Unit::TestCase
 
     context '#call_fql' do
       setup do
-        stub_request(:post, FacebookApi::REST_URL).to_return(:body => '[{"offline_access":1}]')
+        stub_facebook_request('[{"offline_access":1}]')
         @query = 'SELECT offline_access FROM permissions WHERE uid = "123456"'
       end
       should 'make an Fql.query call with the supplied quiery' do
-        RestClient.expects(:post).with(FacebookApi::REST_URL, has_entries('query' => @query, 'method' => 'Fql.query')).returns(stub('response', :body => '[{"offline_access":1}]'))
+        expect_facebook_request(has_entries('query' => @query, 'method' => 'Fql.query')).returns stubbed_response('[{"offline_access":1}]')
         @session.call_fql(@query)
       end
 
