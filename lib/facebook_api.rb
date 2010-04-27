@@ -42,10 +42,27 @@ module FacebookApi
     @config
   end
 
+  # Verifies the signature of parmaters sent by Facebook.
+  # Returns true if the signature is valid, false otherwise
+  # See http://wiki.developers.facebook.com/index.php/Verifying_The_Signature
+  def self.verify_facebook_params_signature(args)
+    signature = args.delete('fb_sig')
+    return false if signature.nil?
+
+    signed_args = Hash.new
+    args.each do |k, v|
+      if k =~ /^fb_sig_(.*)/
+        signed_args[$1] = v
+      end
+    end
+
+    signature == calculate_signature(signed_args)
+  end
+
   # Verifies the signature in the cookies set by Facebook Connect checks out.
-  # Returns true if the signature is valid, fase otherwise.
+  # Returns true if the signature is valid, false otherwise.
   # See http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Signatures_and_Facebook_Connect_Sites
-  def self.verify_connect_cookies(args)
+  def self.verify_connect_cookies_signature(args)
     signature = args.delete(config.api_key)
     return false if signature.nil?
 
@@ -55,7 +72,7 @@ module FacebookApi
         signed_args[$1] = v
       end
     end
-
+    
     signature == calculate_signature(signed_args)
   end
 
