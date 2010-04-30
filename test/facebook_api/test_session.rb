@@ -21,7 +21,7 @@ class TestSession < Test::Unit::TestCase
       end
 
       should 'add the api_key' do
-        assert_equal FacebookApi.config.api_key, @session.prepare_params(@params)['api_key']
+        assert_equal FacebookApi.api_key, @session.prepare_params(@params)['api_key']
       end
 
       should 'add the API version number' do
@@ -76,6 +76,7 @@ class TestSession < Test::Unit::TestCase
         assert_equal [10,20,30], @session.call('Friends.get', :uid => '123456')
       end
     end
+
 
     context '#call method with a file' do
       should 'include the file in the payload' do

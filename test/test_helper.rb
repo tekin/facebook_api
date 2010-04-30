@@ -7,10 +7,12 @@ require 'webmock/test_unit'
 include WebMock
 
 class Test::Unit::TestCase
+  API_KEY = '650503b8455d7ae1cd4524da50d88129'
+  SECRET_KEY = '86cd871c996910064ab9884459c58bab'
 
   FacebookApi.configure do |config|
-    config.api_key = '86cd871c996910064ab9884459c58bab'
-    config.secret_key = '86cd871c996910064ab9884459c58bab'
+    config.api_key = API_KEY
+    config.secret_key = SECRET_KEY
   end
 
   def valid_facebook_params
@@ -26,17 +28,17 @@ class Test::Unit::TestCase
       'fb_sig_user' => '2901279',
       'fb_sig_session_key' => '9a7e04226b1a3c85823bfafd-2901279',
       'fb_sig_expires' => '0',
-      'fb_sig_api_key' => '650503b8455d7ae1cd4524da50d88129',
+      'fb_sig_api_key' => API_KEY,
       'fb_sig' => '3221a15c4e2804c04da31670a7b64516' }
   end
 
   def valid_facebook_connect_cookie_params
-    { "#{FacebookApi.config.api_key}_expires" => '1221157773',
-      "#{FacebookApi.config.api_key}_session_key" => '67bc4aa090e0d34954c1146b-2901279',
-      "#{FacebookApi.config.api_key}_ss" => '7fe9f4fe1035ea92466975fa94176763',
-      "#{FacebookApi.config.api_key}_user" => '2901279',
-      FacebookApi.config.api_key => 'ca4c37ea9d1dec12520bce945d1c3439',
-      "fbsetting_#{FacebookApi.config.api_key}" => 'should-be-ignored' }
+    { "#{FacebookApi.api_key}_expires" => '1221157773',
+      "#{FacebookApi.api_key}_session_key" => '67bc4aa090e0d34954c1146b-2901279',
+      "#{FacebookApi.api_key}_ss" => '7fe9f4fe1035ea92466975fa94176763',
+      "#{FacebookApi.api_key}_user" => '2901279',
+      FacebookApi.api_key => 'ca4c37ea9d1dec12520bce945d1c3439',
+      "fbsetting_#{FacebookApi.api_key}" => 'should-be-ignored' }
   end
 
   def stub_facebook_request(body = '12345', status = 200)

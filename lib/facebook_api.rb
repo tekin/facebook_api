@@ -17,12 +17,24 @@ module FacebookApi
   @config = Configuration.new
   @logger = nil
 
+  # Returns the logger for Facebook calls.
+  # By default, this outputs to STDOUT.
   def self.logger
     unless @logger
       @logger = ::Logger.new($stdout)
       @logger.level = Logger::INFO
     end
     @logger
+  end
+
+  # Returns the api key set in config (see #configure)
+  def self.api_key
+    config.api_key
+  end
+
+  # Returns the secret key set in config (see #configure)
+  def self.secret_key
+    config.secret_key    
   end
 
   # Allows you to set your Facebook configuration for accessing the API:
@@ -63,12 +75,12 @@ module FacebookApi
   # Returns true if the signature is valid, false otherwise.
   # See http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Signatures_and_Facebook_Connect_Sites
   def self.verify_connect_cookies_signature(args)
-    signature = args.delete(config.api_key)
+    signature = args.delete(api_key)
     return false if signature.nil?
 
     signed_args = Hash.new
     args.each do |k, v|
-      if k =~ /^#{config.api_key}_(.*)/
+      if k =~ /^#{api_key}_(.*)/
         signed_args[$1] = v
       end
     end
@@ -79,7 +91,7 @@ module FacebookApi
   # Calculates a signature, as described here: http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Generating_the_Signature
   def self.calculate_signature(params)
     params_string = params.sort.inject('') { |str, pair| str << pair[0] << '=' << pair[1] }
-    Digest::MD5.hexdigest(params_string + config.secret_key)
+    Digest::MD5.hexdigest(params_string + secret_key)
   end
 
   # Helper to convert ActiveSupport::TimeWithZone from local time to Pacific time.

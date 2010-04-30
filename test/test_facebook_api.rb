@@ -2,9 +2,15 @@ require 'test_helper'
 
 class TestFacebookApi < Test::Unit::TestCase
   context 'FacebookApi module' do
+
     should 'be configurable' do
-      FacebookApi.config.expects(:api_key=).with('api key')
-      FacebookApi.configure { |config| config.api_key = 'api key' }
+      assert_equal API_KEY, FacebookApi.config.api_key
+      assert_equal SECRET_KEY, FacebookApi.config.secret_key
+    end
+
+    should 'should provide convenience methods for api_key and secret_key' do
+      assert_equal FacebookApi.config.api_key, FacebookApi.api_key
+      assert_equal FacebookApi.config.secret_key, FacebookApi.secret_key      
     end
 
     should 'have a Logger' do

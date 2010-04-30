@@ -43,7 +43,7 @@ module FacebookApi
     def prepare_params(params)
       s_params = {}
       params.each_pair {|k,v| s_params[k.to_s] = v }
-      s_params['api_key'] = FacebookApi.config.api_key
+      s_params['api_key'] = FacebookApi.api_key
       s_params['v'] = FacebookApi::API_VERSION
       s_params['call_id'] = Time.now.to_f.to_s
       s_params['format'] = 'JSON'
