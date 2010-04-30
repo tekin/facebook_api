@@ -4,17 +4,17 @@ A simple, lightweight Ruby library for accessing the Facebook API.
 
 == Usage
 
-require 'facebook_api'
+  require 'facebook_api'
 
-FacebookApi.configure do |config|
-  config.api_key = '55e9919b8c017abe484c9fb336dffb90'
-  config.secret_key 'fc881eb66493e0b845a3528c018cdd56'
-  config.canvas_page_name = 'crowdfm_publisher'
-  config.callback_url =  'http://tunnel.crowd.fm:4007/'
-end
+  FacebookApi.configure do |config|
+    config.api_key = '55e9919b8c017abe484c9fb336dffb90'
+    config.secret_key 'fc881eb66493e0b845a3528c018cdd56'
+    config.canvas_page_name = 'crowdfm_publisher'
+    config.callback_url =  'http://crowd.fm/'
+  end
 
-session = FacebookApi::Session.new(session_key, uid)
-session.call('Facebook.pages.isAdmin', :page_id => 1)
+  session = FacebookApi::Session.new(session_key, uid)
+  response_hash = session.call('Facebook.pages.isAdmin', :page_id => 1)
 
 == Copyright
 
