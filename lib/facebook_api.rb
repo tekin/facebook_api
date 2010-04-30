@@ -1,21 +1,21 @@
 require 'logger'
 require 'digest/sha2'
 require 'rest_client'
- # TODO: Only need to load json if not already present, i.e. no ActiveSupport
 require 'json'
 
 require 'facebook_api/session'
 
 module FacebookApi
-  class Configuration
+  
+  class Configuration #:nodoc:
     attr_accessor :api_key, :secret_key, :canvas_page_name, :callback_url
   end
 
-  REST_URL = 'http://api.facebook.com/restserver.php'
-  API_VERSION = '1.0'
+  API_VERSION = '1.0' #:nodoc:
+  REST_URL = 'http://api.facebook.com/restserver.php' #:nodoc:
 
-  @config = Configuration.new
   @logger = nil
+  @config = Configuration.new
 
   # Returns the logger for Facebook calls.
   # By default, this outputs to STDOUT.
@@ -27,17 +27,17 @@ module FacebookApi
     @logger
   end
 
-  # Returns the api key set in config (see #configure)
+  # Returns the api key. set this with #configure.
   def self.api_key
     config.api_key
   end
 
-  # Returns the secret key set in config (see #configure)
+  # Returns the secret key. set this with #configure.
   def self.secret_key
     config.secret_key    
   end
 
-  # Allows you to set your Facebook configuration for accessing the API:
+  # Allows you to set your Facebook configuration for accessing the REST API:
   #
   #   FacebookApi.configure do |config|
   #     config.api_key = 'YOUR_API_KEY'
@@ -49,14 +49,15 @@ module FacebookApi
     yield @config
   end
 
-  # Returns the current Facebook configuration
+  # Returns the current Facebook configuration. This gets set with #configure.
   def self.config
     @config
   end
 
   # Verifies the signature of parmaters sent by Facebook.
   # Returns true if the signature is valid, false otherwise
-  # See http://wiki.developers.facebook.com/index.php/Verifying_The_Signature
+  # See the API docs here[http://wiki.developers.facebook.com/index.php/Verifying_The_Signature] for
+  # more details on how this is calculated.
   def self.verify_facebook_params_signature(args)
     signature = args.delete('fb_sig')
     return false if signature.nil?
@@ -73,7 +74,8 @@ module FacebookApi
 
   # Verifies the signature in the cookies set by Facebook Connect checks out.
   # Returns true if the signature is valid, false otherwise.
-  # See http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Signatures_and_Facebook_Connect_Sites
+  # See the API docs here[http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Signatures_and_Facebook_Connect_Sites] for
+  # more details on how this is calculated.
   def self.verify_connect_cookies_signature(args)
     signature = args.delete(api_key)
     return false if signature.nil?
@@ -88,13 +90,13 @@ module FacebookApi
     signature == calculate_signature(signed_args)
   end
 
-  # Calculates a signature, as described here: http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Generating_the_Signature
+  # Calculates a signature, as described in the API docs here[http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Generating_the_Signature].
   def self.calculate_signature(params)
     params_string = params.sort.inject('') { |str, pair| str << pair[0] << '=' << pair[1] }
     Digest::MD5.hexdigest(params_string + secret_key)
   end
 
-  # Helper to convert ActiveSupport::TimeWithZone from local time to Pacific time.
+  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to Pacific time.
   # Use this when sending date/times to Facebook as Facebook expects times to be 
   # sent as Pacific time converted to a Unix timestamp.
   def self.convert_time(time)
@@ -106,8 +108,9 @@ module FacebookApi
     end
   end
 
+  # Raised if a Facebook API call fails and returns an error response.
   class Error < StandardError
-    def initialize(error_msg, error_code = 1)
+    def initialize(error_msg, error_code = 1) #:nodoc:
       super("FacebookApi::Error #{error_code}: #{error_msg}" )
     end
   end

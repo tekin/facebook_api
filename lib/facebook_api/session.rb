@@ -1,22 +1,40 @@
 module FacebookApi
+  # FacebookApi::Session is your window to the Facebook REST API. Once you have a 
+  # valid session, you can make API calls with #call and fql calls with #call_fql.
+  #
+  # Example usage:
+  #
+  #   session = FacebookApi::Session.new(session_key, uid)
+  #   
+  #   # Make REST API calls
+  #   response = session.call('Friends.get', :uid => '12345')
+  #   # Make calls with file attachments
+  #   response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
+  #   # Make fql calls
+  #   response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"') 
   class Session
-    attr_reader :session_key, :uid
+    attr_reader :session_key, :uid #:nodoc:
     
+    # Initialise a FacebookApi::Session with a valid session key and uid.
     def initialize(session_key, uid)
       @session_key = session_key
       @uid = uid
     end
 
+    # Alias for the FacebookApi.logger.
     def logger
       FacebookApi.logger
     end
 
-    # Makes a REST call to the Facebook API.
-    # If a file is specified, this will be included in the call, e.g.
-    # when calling Events.create or Photos.upload)
-    # Example:
+    # Makes a Facebook API REST call.
+    # If a file is specified, this will be included in the call, e.g. when calling Photos.upload.
+    # Example usage:
     #
-    #   session.call('Friends.get', :uid => '12345')
+    #   response = session.call('Friends.get', :uid => '12345')
+    #   response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
+    #
+    # Returns the response from Facebook as either a hash, boolean or literal, depending on what Facebook returns.
+    # Raises FacebookApi::Error if Facebook returns with an error.
     def call(method, params = {}, file = nil)
       params[:method] = method
       begin
@@ -31,15 +49,16 @@ module FacebookApi
       parse_facebook_json response
     end
 
-    # Make a REST FQL call to the Facebook API.
+    # Makes a Facebook API REST FQL call.
+    # Returns the response from Facebook as either a hash, boolean or literal, depending on what Facebook returns.
     # Example:
     #
-    #   session.call('SELECT page_id FROM page_admin WHERE uid="12345"') 
+    #   response = session.call('SELECT page_id FROM page_admin WHERE uid="12345"') 
     def call_fql(query)
       call('Fql.query', :query => query)
     end
 
-    # Prepares passed in params ready for sending to Facebook with a REST call
+    # Prepares passed in params ready for sending to Facebook with a REST call.
     def prepare_params(params)
       s_params = {}
       params.each_pair {|k,v| s_params[k.to_s] = v }

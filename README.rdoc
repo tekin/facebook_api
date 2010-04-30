@@ -14,7 +14,13 @@ A simple, lightweight Ruby library for accessing the Facebook API.
   end
 
   session = FacebookApi::Session.new(session_key, uid)
-  response_hash = session.call('Facebook.pages.isAdmin', :page_id => 1)
+   
+  # Make REST API calls
+  response = session.call('Friends.get', :uid => '12345')
+  # Make calls with file attachments
+  response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
+  # Make fql calls
+  response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"')
 
 == Copyright
 
