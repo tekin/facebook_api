@@ -27,7 +27,7 @@ spec = Gem::Specification.new do |s|
   s.files             = %w(LICENSE README.rdoc) + Dir.glob("{test,lib/**/*}")
   s.require_paths     = ["lib"]
 
-  s.add_dependency("rest-client")
+  s.add_dependency("rest-client", '> 1.4.2')
 
   s.add_development_dependency("test-unit")
   s.add_development_dependency("shoulda")
