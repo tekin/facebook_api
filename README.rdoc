@@ -3,6 +3,10 @@
 A simple, lightweight Ruby library for accessing the Facebook REST API. Currently used in Facebook Connect applications,
 but could easily be extended for use in canvas applications.
 
+== Install
+
+  gem install facebook_api
+
 == Usage
 
   require 'facebook_api'
@@ -56,6 +60,10 @@ With a couple of simple methods, you can make Facebook sessions available to you
       end
     end
   end
+
+== Acknowledgements
+
+Thanks to Mike Mangino of Facebooker and Travis Reeder of MiniFb for inspiration.
 
 == Copyright
 
