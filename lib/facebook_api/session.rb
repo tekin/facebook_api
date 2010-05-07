@@ -12,6 +12,12 @@ module FacebookApi
   #   response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
   #   # Make fql calls
   #   response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"') 
+  #
+  # The response from an API #call will usually be a hash, converted from the JSON
+  # returned by Facebook. For some API calls however, Facebook returns literal
+  # values such as 'true', 'false' or an identifier (e.g. '12334234').
+  # In these cases, #call returns either true, false or the literal respectively.
+  #
   class Session
     attr_reader :session_key, :uid #:nodoc:
     
@@ -54,6 +60,8 @@ module FacebookApi
     # Example:
     #
     #   response = session.call('SELECT page_id FROM page_admin WHERE uid="12345"') 
+    #
+    # Raises FacebookApi::Error if Facebook returns with an error.
     def call_fql(query)
       call('Fql.query', :query => query)
     end
@@ -72,7 +80,7 @@ module FacebookApi
 
     # Because Facebook does not always return valid JSON, we need to pre-parse it and catch
     # the special cases.
-    # If the response is JSON, this returns the parsed response. Otherwise it catches
+    # If the response is valid JSON, this returns the parsed response. Otherwise it catches
     # "true", "false" and string letirals, returning true, false or the string respectively. 
     # Raises Facebook::APIError if the response from Facebook is an error message.
     def parse_facebook_json(response)

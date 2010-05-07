@@ -1,6 +1,7 @@
 = Facebook API
 
-A simple, lightweight Ruby library for accessing the Facebook API.
+A simple, lightweight Ruby library for accessing the Facebook REST API. Currently used in Facebook Connect applications,
+but could easily be extended for use in canvas applications.
 
 == Usage
 
@@ -21,6 +22,40 @@ A simple, lightweight Ruby library for accessing the Facebook API.
   response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
   # Make fql calls
   response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"')
+
+Both FacebookApi::Session#call and FacebookApi::Session#call_fql will generally return a hash, parsed from the JSON returned
+by Facebook. However, for some API calls Facebook returns non-valid JSON, usually either 'true', 'false' or a string literal
+(e.g. '12345'). In these cases, the return value from #call and #call_fql will be either true, false or the string literal
+respectively.
+
+=== How to use in a Rails application
+
+With a couple of simple methods, you can make Facebook sessions available to you in your controllers and views:
+
+  class ApplicationController < ActionController::Base
+    # Requiring a valid facebook connect session for your controller actions with a before_filter:
+    before_filter :require_facebook_session, :except => [:login]
+    # Make the facebook_session available in your views by making it a helper_method:
+    helper_method :facebook_session
+
+    private
+
+    def facebook_session
+      @facebook_session ||= facebook_session_from_cookies
+    end
+
+    def facebook_session_from_cookies
+      if FacebookApi.verify_connect_cookies_signature(cookies)
+        FacebookApi::Session.new(cookies["#{FacebookApi.api_key}_session_key"], cookies["#{FacebookApi.api_key}_user"])
+      end
+    end
+
+    def require_facebook_session
+      unless facebook_session
+        redirect_to facebook_connect_path
+      end
+    end
+  end
 
 == Copyright
 
