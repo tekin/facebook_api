@@ -63,7 +63,7 @@ module FacebookApi
     #
     # Raises FacebookApi::Error if Facebook returns with an error.
     def call_fql(query)
-      call('Fql.query', :query => query)
+      call('Fql.query', :query => query, :uid => uid, :session_key => session_key)
     end
 
     # Prepares passed in params ready for sending to Facebook with a REST call.

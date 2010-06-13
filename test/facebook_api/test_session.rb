@@ -104,8 +104,8 @@ class TestSession < Test::Unit::TestCase
         stub_facebook_request('[{"offline_access":1}]')
         @query = 'SELECT offline_access FROM permissions WHERE uid = "123456"'
       end
-      should 'make an Fql.query call with the supplied quiery' do
-        expect_facebook_request(has_entries('query' => @query, 'method' => 'Fql.query')).returns stubbed_response('[{"offline_access":1}]')
+      should 'make an Fql.query call with session params and the the supplied query' do
+        expect_facebook_request(has_entries('query' => @query, 'method' => 'Fql.query', 'uid' => @session.uid, 'session_key' => @session.session_key)).returns stubbed_response('[{"offline_access":1}]')
         @session.call_fql(@query)
       end
 
