@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{facebook_api}
-  s.version = "0.1.0"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tekin Suleyman"]
-  s.date = %q{2010-05-07}
+  s.date = %q{2010-06-13}
   s.email = %q{tekin@tekin.co.uk}
   s.extra_rdoc_files = ["README.rdoc"]
-  s.files = ["LICENSE", "README.rdoc", "lib/facebook_api/session.rb", "lib/facebook_api.rb"]
+  s.files = ["LICENSE", "README.rdoc", "test", "lib/facebook_api", "lib/facebook_api/session.rb", "lib/facebook_api.rb"]
   s.homepage = %q{http://tekin.co.uk}
   s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
