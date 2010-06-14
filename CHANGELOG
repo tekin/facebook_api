@@ -1,0 +1,7 @@
+## 0.1.3 (14 June 2010)
+
+	- FacebookApi#convert_time helper now converts timezoned times to UTC instead of Pacific Eastern as Facebook have changed what they expect.
+
+## 0.1.2 (13 June 2010)
+
+	- FacebookApi::Session#call_fql now sends the user session info as some queries no longer execute without it.
