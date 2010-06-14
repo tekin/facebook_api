@@ -96,12 +96,12 @@ module FacebookApi
     Digest::MD5.hexdigest(params_string + secret_key)
   end
 
-  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to Pacific time.
+  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to UTC.
   # Use this when sending date/times to Facebook as Facebook expects times to be 
-  # sent as Pacific time converted to a Unix timestamp.
+  # sent as UTC converted to a Unix timestamp.
   def self.convert_time(time)
     if time.is_a?(ActiveSupport::TimeWithZone)
-      pacific_zone = ActiveSupport::TimeZone["Pacific Time (US & Canada)"]
+      pacific_zone = ActiveSupport::TimeZone["UTC"]
       pacific_zone.parse(time.strftime("%Y-%m-%d %H:%M:%S"))
     else
       time

@@ -48,7 +48,7 @@ class TestFacebookApi < Test::Unit::TestCase
 
     context '#convert_time' do
       # TODO: Figure out how to test this without ActiveSupport
-      should 'convert an ActiveSupport::TimeWithZone to Pacific time (PST and PDT)'
+      should 'convert an ActiveSupport::TimeWithZone to UTC'
     end
   end
 end
