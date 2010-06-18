@@ -14,7 +14,7 @@ task :default => ["test"]
 spec = Gem::Specification.new do |s|
 
   s.name              = "facebook_api"
-  s.version           = "0.1.2"
+  s.version           = "0.1.3"
   s.summary           = "A simple, lightweight Ruby library for accessing the Facebook API"
   s.author            = "Tekin Suleyman"
   s.email             = "tekin@tekin.co.uk"
