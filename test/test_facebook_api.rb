@@ -23,6 +23,25 @@ class TestFacebookApi < Test::Unit::TestCase
       assert_equal Logger::INFO, FacebookApi.logger.level
     end
 
+    context '#authorize_url' do
+      should 'return the Facebook OAuth2 authorization url with redirect_uri' do
+        assert_equal "https://graph.facebook.com/oauth/authorize?client_id=#{APP_ID}&type=web_server&redirect_uri=REDIRECT_URI",
+          FacebookApi.authorize_url('REDIRECT_URI')
+      end
+      should 'return the Facebook OAuth2 authorization url with redirect_uri and optional params' do
+        assert_equal "https://graph.facebook.com/oauth/authorize?scope=offline_access&client_id=#{APP_ID}&type=web_server&redirect_uri=REDIRECT_URI",
+          FacebookApi.authorize_url('REDIRECT_URI', :scope => 'offline_access')
+      end
+    end
+
+    context '#get_access_token' do
+      should 'make a request to retrieve the token' do
+        stub_request(:post, 'https://graph.facebook.com/oauth/access_token').to_return(:body => 'access_token=ACCESS_TOKEN_HERE')
+        assert_equal 'ACCESS_TOKEN_HERE', FacebookApi.get_access_token('CODE', 'REDIRECT_URI')
+        assert_requested(:post, 'https://graph.facebook.com/oauth/access_token', :query => {:redirect_uri => 'REDIRECT_URI', :code => 'CODE', :client_secret => SECRET_KEY, :client_id => APP_ID, :type => 'web_server'})
+      end
+    end
+
     context '#convert_time' do
       # TODO: Figure out how to test this without ActiveSupport
       should 'convert an ActiveSupport::TimeWithZone to UTC'

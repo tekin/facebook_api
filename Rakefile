@@ -28,6 +28,7 @@ spec = Gem::Specification.new do |s|
   s.require_paths     = ["lib"]
 
   s.add_dependency("rest-client", '> 1.4.2')
+  s.add_dependency("oauth2")
 
   s.add_development_dependency("test-unit")
   s.add_development_dependency("shoulda")

@@ -2,6 +2,7 @@ require 'logger'
 require 'digest/sha2'
 require 'rest_client'
 require 'json'
+require 'oauth2'
 
 require 'facebook_api/session'
 
@@ -58,6 +59,24 @@ module FacebookApi
   # Returns the current Facebook configuration. This gets set with #configure.
   def self.config
     @config
+  end
+
+  # Returns the OAuth2 authorization url to redirect users to for authorization
+  def self.authorize_url(redirect_uri, params={})
+    oauth_client.web_server.authorize_url(params.merge(:redirect_uri => redirect_uri))
+  end
+
+  # Peforms the final step of OAuth2 authorization by retrieving the access token.
+  # call with the verification code returned by Facebook and the same redirect_uri
+  # used with the original call to #authorize_url.
+  # Returns an access_token
+  def self.get_access_token(code, redirect_uri)
+    response = oauth_client.web_server.get_access_token(code, :redirect_uri => redirect_uri)
+    response.token
+  end
+
+  def self.oauth_client
+    OAuth2::Client.new(app_id, secret_key, :site => 'https://graph.facebook.com')
   end
 
   # Raised if a Facebook API call fails and returns an error response.
