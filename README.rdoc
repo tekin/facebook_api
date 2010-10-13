@@ -12,18 +12,19 @@ but could easily be extended for use in canvas applications.
   require 'facebook_api'
 
   FacebookApi.configure do |config|
+    config.app_id = '12346789'
     config.api_key = '55e9919b8c017abe484c9fb336dffb90'
     config.secret_key 'fc881eb66493e0b845a3528c018cdd56'
     config.canvas_page_name = 'crowdfm_publisher'
     config.callback_url =  'http://crowd.fm/'
   end
 
-  session = FacebookApi::Session.new(session_key, uid)
+  session = FacebookApi::Session.new(access_token)
    
   # Make REST API calls
-  response = session.call('Friends.get', :uid => '12345')
+  response = session.call('Friends.get')
   # Make calls with file attachments
-  response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
+  response = session.call('Photos.upload', {:aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
   # Make fql calls
   response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"')
 
@@ -33,6 +34,9 @@ by Facebook. However, for some API calls Facebook returns non-valid JSON, usuall
 respectively.
 
 === How to use in a Rails application
+
+
+NOTE: OUTT THE FOLLOWING IS NOW OUT OF DATE - THIS BRANCH USES OAUTH2 FOR ACCESS_TOKEN BASED SESSIONS 
 
 With a couple of simple methods, you can make Facebook sessions available to you in your controllers and views:
 

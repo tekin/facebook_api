@@ -1,10 +1,10 @@
 module FacebookApi
   # FacebookApi::Session is your window to the Facebook REST API. Once you have a 
-  # valid session, you can make API calls with #call and fql calls with #call_fql.
+  # valid user access token, you can make API calls with #call and fql calls with #call_fql.
   #
   # Example usage:
   #
-  #   session = FacebookApi::Session.new(session_key, uid)
+  #   session = FacebookApi::Session.new(access_token)
   #   
   #   # Make REST API calls
   #   response = session.call('Friends.get', :uid => '12345')
@@ -19,12 +19,11 @@ module FacebookApi
   # In these cases, #call returns either true, false or the literal respectively.
   #
   class Session
-    attr_reader :session_key, :uid #:nodoc:
+    attr_reader :access_token #:nodoc:
     
     # Initialise a FacebookApi::Session with a valid session key and uid.
-    def initialize(session_key, uid)
-      @session_key = session_key
-      @uid = uid
+    def initialize(access_token)
+      @access_token = access_token
     end
 
     # Alias for the FacebookApi.logger.
@@ -36,18 +35,17 @@ module FacebookApi
     # If a file is specified, this will be included in the call, e.g. when calling Photos.upload.
     # Example usage:
     #
-    #   response = session.call('Friends.get', :uid => '12345')
-    #   response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
+    #   response = session.call('Friends.get')
+    #   response = session.call('Photos.upload', {:aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
     #
     # Returns the response from Facebook as either a hash, boolean or literal, depending on what Facebook returns.
     # Raises FacebookApi::Error if Facebook returns with an error.
     def call(method, params = {}, file = nil)
-      params[:method] = method
       begin
         params = prepare_params(params)
         logger.debug "Sending request to facebook: #{params.inspect}"
         params[nil] = file if file
-        response = RestClient.post(FacebookApi::REST_URL, params)
+        response = RestClient.post(FacebookApi::REST_URL + method, params)
       rescue SocketError => e
         raise IOError.new("Cannot connect to facebook: #{e}")
       end
@@ -63,18 +61,15 @@ module FacebookApi
     #
     # Raises FacebookApi::Error if Facebook returns with an error.
     def call_fql(query)
-      call('Fql.query', :query => query, :uid => uid, :session_key => session_key)
+      call('Fql.query', :query => query)
     end
 
     # Prepares passed in params ready for sending to Facebook with a REST call.
     def prepare_params(params)
       s_params = {}
       params.each_pair {|k,v| s_params[k.to_s] = v }
-      s_params['api_key'] = FacebookApi.api_key
-      s_params['v'] = FacebookApi::API_VERSION
-      s_params['call_id'] = Time.now.to_f.to_s
       s_params['format'] = 'JSON'
-      s_params['sig'] = FacebookApi.calculate_signature(s_params)
+      s_params['access_token'] = access_token
       s_params
     end
 

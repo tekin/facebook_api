@@ -7,10 +7,12 @@ require 'webmock/test_unit'
 include WebMock
 
 class Test::Unit::TestCase
+  APP_ID = '12334567'
   API_KEY = '650503b8455d7ae1cd4524da50d88129'
   SECRET_KEY = '86cd871c996910064ab9884459c58bab'
 
   FacebookApi.configure do |config|
+    config.app_id = APP_ID
     config.api_key = API_KEY
     config.secret_key = SECRET_KEY
   end
@@ -41,12 +43,12 @@ class Test::Unit::TestCase
       "fbsetting_#{FacebookApi.api_key}" => 'should-be-ignored' }
   end
 
-  def stub_facebook_request(body = '12345', status = 200)
-    stub_request(:post, FacebookApi::REST_URL).to_return(:body => body, :status => status)
+  def stub_facebook_request(method, body = '12345', status = 200)
+    stub_request(:any, FacebookApi::REST_URL + method).to_return(:body => body, :status => status)
   end
 
-  def expect_facebook_request(mocha_matcher)
-    RestClient.expects(:post).with(FacebookApi::REST_URL, mocha_matcher)
+  def expect_facebook_request(method, params = {})
+    RestClient.expects(:post).with(FacebookApi::REST_URL + method, params)
   end
 
   def stubbed_response(body = '341341252346', code = 200)

@@ -8,11 +8,10 @@ require 'facebook_api/session'
 module FacebookApi
   
   class Configuration #:nodoc:
-    attr_accessor :api_key, :secret_key, :canvas_page_name, :callback_url
+    attr_accessor :app_id, :api_key, :secret_key, :canvas_page_name, :callback_url
   end
 
-  API_VERSION = '1.0' #:nodoc:
-  REST_URL = 'http://api.facebook.com/restserver.php' #:nodoc:
+  REST_URL = 'https://api.facebook.com/method/' #:nodoc:
 
   @logger = nil
   @config = Configuration.new
@@ -27,19 +26,26 @@ module FacebookApi
     @logger
   end
 
+  # Returns the App id. set this with #configure.
+  def self.app_id
+    config.app_id
+  end
+
   # Returns the api key. set this with #configure.
+  # Note: Redundant now we use OAuth2?
   def self.api_key
     config.api_key
   end
 
   # Returns the secret key. set this with #configure.
   def self.secret_key
-    config.secret_key    
+    config.secret_key 
   end
 
   # Allows you to set your Facebook configuration for accessing the REST API:
   #
   #   FacebookApi.configure do |config|
+  #     config.app_id = 'YOUR_APP_ID'
   #     config.api_key = 'YOUR_API_KEY'
   #     config.secret_key = 'YOUR_SECRET_KEY'
   #     config.canvas_page_name = 'YOUR_CANVAS_PAGE_NAME'
@@ -52,60 +58,6 @@ module FacebookApi
   # Returns the current Facebook configuration. This gets set with #configure.
   def self.config
     @config
-  end
-
-  # Verifies the signature of parmaters sent by Facebook.
-  # Returns true if the signature is valid, false otherwise
-  # See the API docs here[http://wiki.developers.facebook.com/index.php/Verifying_The_Signature] for
-  # more details on how this is calculated.
-  def self.verify_facebook_params_signature(args)
-    signature = args.delete('fb_sig')
-    return false if signature.nil?
-
-    signed_args = Hash.new
-    args.each do |k, v|
-      if k =~ /^fb_sig_(.*)/
-        signed_args[$1] = v
-      end
-    end
-
-    signature == calculate_signature(signed_args)
-  end
-
-  # Verifies the signature in the cookies set by Facebook Connect checks out.
-  # Returns true if the signature is valid, false otherwise.
-  # See the API docs here[http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Signatures_and_Facebook_Connect_Sites] for
-  # more details on how this is calculated.
-  def self.verify_connect_cookies_signature(args)
-    signature = args.delete(api_key)
-    return false if signature.nil?
-
-    signed_args = Hash.new
-    args.each do |k, v|
-      if k =~ /^#{api_key}_(.*)/
-        signed_args[$1] = v
-      end
-    end
-    
-    signature == calculate_signature(signed_args)
-  end
-
-  # Calculates a signature, as described in the API docs here[http://wiki.developers.facebook.com/index.php/Verifying_The_Signature#Generating_the_Signature].
-  def self.calculate_signature(params)
-    params_string = params.sort.inject('') { |str, pair| str << pair[0] << '=' << pair[1] }
-    Digest::MD5.hexdigest(params_string + secret_key)
-  end
-
-  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to UTC.
-  # Use this when sending date/times to Facebook as Facebook expects times to be 
-  # sent as UTC converted to a Unix timestamp.
-  def self.convert_time(time)
-    if time.is_a?(ActiveSupport::TimeWithZone)
-      pacific_zone = ActiveSupport::TimeZone["UTC"]
-      pacific_zone.parse(time.strftime("%Y-%m-%d %H:%M:%S"))
-    else
-      time
-    end
   end
 
   # Raised if a Facebook API call fails and returns an error response.
