@@ -64,6 +64,12 @@ module FacebookApi
       call('Fql.query', :query => query)
     end
 
+    # Makes a call to the Facebook Graph API. 
+    # Note: Experimental method, not for primetime
+    def graph(path, params = {})
+      response = RestClient.post(FacebookApi::GRAPH_URL + path, params)
+    end
+
     # Prepares passed in params ready for sending to Facebook with a REST call.
     def prepare_params(params)
       s_params = {}

@@ -13,6 +13,7 @@ module FacebookApi
   end
 
   REST_URL = 'https://api.facebook.com/method/' #:nodoc:
+  GRAPH_URL = 'https://graph.facebook.com/' #:nodoc:
 
   @logger = nil
   @config = Configuration.new

@@ -3,7 +3,6 @@ require 'test_helper'
 class TestSession < Test::Unit::TestCase
   context 'A Facebook::Session instance' do
     setup do
-      FacebookApi.logger.level = Logger::DEBUG
       @session = FacebookApi::Session.new('ACCESS_TOKEN')
     end
 
@@ -101,6 +100,14 @@ class TestSession < Test::Unit::TestCase
 
       should 'parse and return the response' do
         assert_equal ([{'offline_access' => 1}]), @session.call_fql(@query)
+      end
+    end
+
+    context '#graph' do
+      should 'make a call to the Facebook graph API' do
+        stub_request(:any, (FacebookApi::GRAPH_URL + 'me')).to_return(:body => '{id: 12354}')
+        @session.graph('me')
+        assert_requested(:post, (FacebookApi::GRAPH_URL + 'me'))
       end
     end
   end
