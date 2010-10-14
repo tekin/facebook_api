@@ -105,9 +105,10 @@ class TestSession < Test::Unit::TestCase
 
     context '#graph_get' do
       should 'make a call to the Facebook graph API' do
-        stub_request(:any, (FacebookApi::GRAPH_URL + 'me?access_token=ACCESS_TOKEN')).to_return(:body => '{id: 12354}')
-        @session.graph_get('me')
+        stub_request(:any, (FacebookApi::GRAPH_URL + 'me?access_token=ACCESS_TOKEN')).to_return(:body => '{"id": "12354"}')
+        response = @session.graph_get('me')
         assert_requested(:get, (FacebookApi::GRAPH_URL + 'me?access_token=ACCESS_TOKEN'))
+        assert_equal ({"id" => "12354"}), response
       end
     end
   end

@@ -68,6 +68,7 @@ module FacebookApi
     # Note: Experimental method, not for primetime
     def graph_get(path)
       response = RestClient.get("#{FacebookApi::GRAPH_URL}#{path}?access_token=#{URI.escape(access_token)}")
+      parse_facebook_json response
     end
 
     # Prepares passed in params ready for sending to Facebook with a REST call.
