@@ -66,8 +66,8 @@ module FacebookApi
 
     # Makes a call to the Facebook Graph API. 
     # Note: Experimental method, not for primetime
-    def graph(path, params = {})
-      response = RestClient.post(FacebookApi::GRAPH_URL + path, params.merge(:access_token => access_token))
+    def graph_get(path)
+      response = RestClient.get("#{FacebookApi::GRAPH_URL}#{path}?access_token=#{URI.escape(access_token)}")
     end
 
     # Prepares passed in params ready for sending to Facebook with a REST call.
