@@ -38,7 +38,7 @@ class TestFacebookApi < Test::Unit::TestCase
       should 'make a request to retrieve the token' do
         stub_request(:post, 'https://graph.facebook.com/oauth/access_token').to_return(:body => 'access_token=ACCESS_TOKEN_HERE')
         assert_equal 'ACCESS_TOKEN_HERE', FacebookApi.get_access_token('CODE', 'REDIRECT_URI')
-        assert_requested(:post, 'https://graph.facebook.com/oauth/access_token', :query => {:redirect_uri => 'REDIRECT_URI', :code => 'CODE', :client_secret => SECRET_KEY, :client_id => APP_ID, :type => 'web_server'})
+        assert_requested(:post, 'https://graph.facebook.com/oauth/access_token', :body => {:redirect_uri => 'REDIRECT_URI', :code => 'CODE', :client_secret => SECRET_KEY, :client_id => APP_ID, :type => 'web_server'})
       end
     end
 
