@@ -27,13 +27,15 @@ spec = Gem::Specification.new do |s|
   s.files             = %w(LICENSE README.rdoc) + Dir.glob("{test,lib/**/*}")
   s.require_paths     = ["lib"]
 
-  s.add_dependency("rest-client", '> 1.4.2')
-  s.add_dependency("oauth2")
+  s.add_dependency("rest-client", '~> 1.6.1')
+  s.add_dependency("oauth2", '~> 0.1.0')
 
   s.add_development_dependency("test-unit")
-  s.add_development_dependency("shoulda")
-  s.add_development_dependency("mocha")
-  s.add_development_dependency("webmock")
+  s.add_development_dependency("shoulda", '~> 2.11.3')
+  s.add_development_dependency("mocha", '~> 0.9.10')
+  s.add_development_dependency("webmock", '~> 1.6.1')
+  
+  s.required_rubygems_version = Gem::Requirement.new(">= 1.3")
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
@@ -58,4 +60,25 @@ end
 desc 'Clear out RDoc and generated packages'
 task :clean => [:clobber_rdoc, :clobber_package] do
   rm "#{spec.name}.gemspec"
+end
+
+desc 'Tag the repository in git with gem version number'
+task :tag => [:gemspec, :package] do
+  if `git diff --cached`.empty?
+    if `git tag`.split("\n").include?("v#{spec.version}")
+      raise "Version #{spec.version} has already been released"
+    end
+    `git add #{File.expand_path("../#{spec.name}.gemspec", __FILE__)}`
+    `git commit -m "Released version #{spec.version}"`
+    `git tag v#{spec.version}`
+    `git push --tags`
+    `git push`
+  else
+    raise "Unstaged changes still waiting to be committed"
+  end
+end
+
+desc "Tag and publish the gem to rubygems.org"
+task :publish => :tag do
+  `gem push pkg/#{spec.name}-#{spec.version}.gem`
 end
