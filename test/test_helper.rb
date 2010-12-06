@@ -4,16 +4,18 @@ require 'test/unit'
 require 'mocha'
 require 'shoulda'
 require 'webmock/test_unit'
-include WebMock
+
+include WebMock::API
+
+API_KEY = '650503b8455d7ae1cd4524da50d88129'
+SECRET_KEY = '86cd871c996910064ab9884459c58bab'
+
+FacebookApi.configure do |config|
+  config.api_key = API_KEY
+  config.secret_key = SECRET_KEY
+end
 
 class Test::Unit::TestCase
-  API_KEY = '650503b8455d7ae1cd4524da50d88129'
-  SECRET_KEY = '86cd871c996910064ab9884459c58bab'
-
-  FacebookApi.configure do |config|
-    config.api_key = API_KEY
-    config.secret_key = SECRET_KEY
-  end
 
   def valid_facebook_params
     { 'fb_sig_in_canvas' => '1',
