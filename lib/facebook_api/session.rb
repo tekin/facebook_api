@@ -19,11 +19,12 @@ module FacebookApi
   # In these cases, #call returns either true, false or the literal respectively.
   #
   class Session
-    attr_reader :access_token #:nodoc:
-    
+    attr_reader :access_token, :uid #:nodoc:
+
     # Initialise a FacebookApi::Session with a valid session key and uid.
-    def initialize(access_token)
+    def initialize(access_token, uid=nil)
       @access_token = access_token
+      @uid = uid
     end
 
     # Alias for the FacebookApi.logger.
