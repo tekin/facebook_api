@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rest-client>, ["~> 1.6.1"])
       s.add_runtime_dependency(%q<oauth2>, ["~> 0.1.0"])
-      s.add_runtime_dependency(%q<active_support>, ["~> 3.0.3"])
       s.add_development_dependency(%q<test-unit>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, ["~> 2.11.3"])
       s.add_development_dependency(%q<mocha>, ["~> 0.9.10"])
@@ -31,7 +30,6 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
       s.add_dependency(%q<oauth2>, ["~> 0.1.0"])
-      s.add_dependency(%q<active_support>, ["~> 3.0.3"])
       s.add_dependency(%q<test-unit>, [">= 0"])
       s.add_dependency(%q<shoulda>, ["~> 2.11.3"])
       s.add_dependency(%q<mocha>, ["~> 0.9.10"])
@@ -40,7 +38,6 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
     s.add_dependency(%q<oauth2>, ["~> 0.1.0"])
-    s.add_dependency(%q<active_support>, ["~> 3.0.3"])
     s.add_dependency(%q<test-unit>, [">= 0"])
     s.add_dependency(%q<shoulda>, ["~> 2.11.3"])
     s.add_dependency(%q<mocha>, ["~> 0.9.10"])

@@ -29,7 +29,6 @@ spec = Gem::Specification.new do |s|
 
   s.add_dependency("rest-client", '~> 1.6.1')
   s.add_dependency("oauth2", '~> 0.1.0')
-  s.add_dependency("active_support", '~> 3.0.3')
 
   s.add_development_dependency("test-unit")
   s.add_development_dependency("shoulda", '~> 2.11.3')
