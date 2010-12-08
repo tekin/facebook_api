@@ -80,6 +80,18 @@ module FacebookApi
     OAuth2::Client.new(app_id, secret_key, :site => 'https://graph.facebook.com')
   end
 
+  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to UTC.
+  # Use this when sending date/times to Facebook as Facebook expects times to be 
+  # sent as UTC converted to a Unix timestamp.
+  def self.convert_time(time)
+    if time.is_a?(ActiveSupport::TimeWithZone)
+      pacific_zone = ActiveSupport::TimeZone["UTC"]
+      pacific_zone.parse(time.strftime("%Y-%m-%d %H:%M:%S"))
+    else
+      time
+    end
+  end
+
   # Raised if a Facebook API call fails and returns an error response.
   class Error < StandardError
     def initialize(error_msg, error_code = 1) #:nodoc:
