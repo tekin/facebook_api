@@ -4,6 +4,8 @@ require 'test/unit'
 require 'mocha'
 require 'shoulda'
 require 'webmock/test_unit'
+require 'active_support'
+require 'active_support/time'
 
 include WebMock::API
 

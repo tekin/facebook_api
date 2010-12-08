@@ -80,16 +80,14 @@ module FacebookApi
     OAuth2::Client.new(app_id, secret_key, :site => 'https://graph.facebook.com')
   end
 
-  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to UTC.
-  # Use this when sending date/times to Facebook as Facebook expects times to be 
-  # sent as UTC converted to a Unix timestamp.
+  # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to a timezone-less
+  # ISO 8601 datetime string, e.g. '2010-08-15T15:30:00'
+  # Use this when sending date/times for Facebook events as Facebook currently expects times
+  # to be sent as a ISO 8601 datetime string without a timezone.
+  # see http://bugs.developers.facebook.net/show_bug.cgi?id=7210 for the full, painful, story.
   def self.convert_time(time)
-    if time.is_a?(ActiveSupport::TimeWithZone)
-      pacific_zone = ActiveSupport::TimeZone["UTC"]
-      pacific_zone.parse(time.strftime("%Y-%m-%d %H:%M:%S"))
-    else
-      time
-    end
+    utc_zone = ActiveSupport::TimeZone["UTC"]
+    utc_zone.parse(time.strftime("%Y-%m-%d %H:%M:%S")).iso8601.chop
   end
 
   # Raised if a Facebook API call fails and returns an error response.

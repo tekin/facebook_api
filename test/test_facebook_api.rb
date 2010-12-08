@@ -43,8 +43,11 @@ class TestFacebookApi < Test::Unit::TestCase
     end
 
     context '#convert_time' do
-      # TODO: Figure out how to test this without ActiveSupport
-      should 'convert an ActiveSupport::TimeWithZone to UTC'
+      should 'convert a ActiveSupport::TimeWithZone to an ISO 8601 string without a specified timezone' do
+        Time.zone = 'London'
+        time = Time.zone.local(2010, 8, 15, 15, 30) # 15 Aug 2010 15:30 +01:00 for British summertime
+        assert_equal '2010-08-15T15:30:00', FacebookApi.convert_time(time)
+      end
     end
   end
 end
