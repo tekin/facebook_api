@@ -64,7 +64,7 @@ module FacebookApi
 
   # Returns the OAuth2 authorization url to redirect users to for authorization
   def self.authorize_url(redirect_uri, params={})
-    oauth_client.web_server.authorize_url(params.merge(:redirect_uri => redirect_uri))
+    oauth_client.auth_code.authorize_url(params.merge(:redirect_uri => redirect_uri))
   end
 
   # Peforms the final step of OAuth2 authorization by retrieving the access token.
@@ -72,12 +72,12 @@ module FacebookApi
   # used with the original call to #authorize_url.
   # Returns an access_token
   def self.get_access_token(code, redirect_uri)
-    response = oauth_client.web_server.get_access_token(code, :redirect_uri => redirect_uri)
+    response = oauth_client.auth_code.get_token(code, :parse => :query, :redirect_uri => redirect_uri)
     response.token
   end
 
   def self.oauth_client
-    OAuth2::Client.new(app_id, secret_key, :site => 'https://graph.facebook.com')
+    OAuth2::Client.new(app_id, secret_key, :site => 'https://graph.facebook.com', :token_url => 'oauth/access_token')
   end
 
   # Helper to convert <tt>ActiveSupport::TimeWithZone</tt> from local time to a timezone-less

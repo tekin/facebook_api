@@ -25,18 +25,28 @@ class TestFacebookApi < Test::Unit::TestCase
 
     context '#authorize_url' do
       should 'return the Facebook OAuth2 authorization url with redirect_uri' do
-        assert_equal "https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{APP_ID}&redirect_uri=REDIRECT_URI",
-          FacebookApi.authorize_url('REDIRECT_URI')
+        auth_url = FacebookApi.authorize_url('REDIRECT_URI')
+
+        url, query_params = auth_url.split('?')
+        query_params = query_params.split('&')
+
+        assert_equal "https://graph.facebook.com/oauth/authorize", url
+        assert_same_elements ['response_type=code', "client_id=#{APP_ID}", 'redirect_uri=REDIRECT_URI'], query_params
       end
       should 'return the Facebook OAuth2 authorization url with redirect_uri and optional params' do
-        assert_equal "https://graph.facebook.com/oauth/authorize?scope=offline_access&response_type=code&client_id=#{APP_ID}&redirect_uri=REDIRECT_URI",
-          FacebookApi.authorize_url('REDIRECT_URI', :scope => 'offline_access')
+        auth_url = FacebookApi.authorize_url('REDIRECT_URI', :scope => 'offline_access')
+
+        url, query_params = auth_url.split('?')
+        query_params = query_params.split('&')
+
+        assert_equal "https://graph.facebook.com/oauth/authorize", url
+        assert_same_elements ['response_type=code', "client_id=#{APP_ID}", 'redirect_uri=REDIRECT_URI', 'scope=offline_access'], query_params
       end
     end
 
     context '#get_access_token' do
       should 'make a request to retrieve the token' do
-        stub_request(:post, 'https://graph.facebook.com/oauth/access_token').to_return(:body => 'access_token=ACCESS_TOKEN_HERE')
+        stub_request(:post, 'https://graph.facebook.com/oauth/access_token').to_return(:body => 'access_token=ACCESS_TOKEN_HERE', :headers => { :content_type => 'application/x-www-form-urlencoded'} )
         assert_equal 'ACCESS_TOKEN_HERE', FacebookApi.get_access_token('CODE', 'REDIRECT_URI')
         assert_requested(:post, 'https://graph.facebook.com/oauth/access_token', :body => {:redirect_uri => 'REDIRECT_URI', :code => 'CODE', :client_secret => SECRET_KEY, :client_id => APP_ID, :grant_type => 'authorization_code'})
       end

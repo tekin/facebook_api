@@ -1,46 +1,28 @@
 # -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
+require "facebook_api/version"
 
 Gem::Specification.new do |s|
-  s.name = %q{facebook_api}
-  s.version = "0.1.3"
-
-  s.required_rubygems_version = Gem::Requirement.new(">= 1.3") if s.respond_to? :required_rubygems_version=
+  s.name = "facebook_api"
+  s.version = FacebookApi::VERSION
   s.authors = ["Tekin Suleyman"]
-  s.date = %q{2010-12-08}
-  s.email = %q{tekin@tekin.co.uk}
+  s.email = "tekin@tekin.co.uk"
+  s.homepage = "https://github.com/tekin/facebook_api"
+  s.summary     = "A simple, lightweight Ruby library for accessing the Facebook REST API"
+  s.description = "A simple, lightweight Ruby library for accessing the Facebook REST API. Currently used in Facebook Connect applications, but could easily be extended for use in canvas applications."
+
+  s.rubyforge_project = 'facebook_api'
+
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.extra_rdoc_files = ["README.rdoc"]
-  s.files = ["LICENSE", "README.rdoc", "test", "lib/facebook_api", "lib/facebook_api/session.rb", "lib/facebook_api.rb"]
-  s.homepage = %q{http://tekin.co.uk}
   s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{A simple, lightweight Ruby library for accessing the Facebook API}
 
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rest-client>, ["~> 1.6.1"])
-      s.add_runtime_dependency(%q<oauth2>, ["~> 0.1.0"])
-      s.add_development_dependency(%q<test-unit>, [">= 0"])
-      s.add_development_dependency(%q<shoulda>, ["~> 2.11.3"])
-      s.add_development_dependency(%q<mocha>, ["~> 0.9.10"])
-      s.add_development_dependency(%q<webmock>, ["~> 1.6.1"])
-    else
-      s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
-      s.add_dependency(%q<oauth2>, ["~> 0.1.0"])
-      s.add_dependency(%q<test-unit>, [">= 0"])
-      s.add_dependency(%q<shoulda>, ["~> 2.11.3"])
-      s.add_dependency(%q<mocha>, ["~> 0.9.10"])
-      s.add_dependency(%q<webmock>, ["~> 1.6.1"])
-    end
-  else
-    s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
-    s.add_dependency(%q<oauth2>, ["~> 0.1.0"])
-    s.add_dependency(%q<test-unit>, [">= 0"])
-    s.add_dependency(%q<shoulda>, ["~> 2.11.3"])
-    s.add_dependency(%q<mocha>, ["~> 0.9.10"])
-    s.add_dependency(%q<webmock>, ["~> 1.6.1"])
-  end
+  s.add_runtime_dependency      "rest-client", ["~> 1.6.1"]
+  s.add_runtime_dependency      "oauth2", ["~> 0.5.0"]
+  s.add_development_dependency  "test-unit", [">= 0"]
+  s.add_development_dependency  "shoulda", ["~> 2.11.3"]
+  s.add_development_dependency  "mocha", ["~> 0.9.10"]
+  s.add_development_dependency  "webmock", ["~> 1.6.1"]
 end
