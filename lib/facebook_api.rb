@@ -70,7 +70,7 @@ module FacebookApi
 
   # Performs the final step of OAuth2 authorization by verifying the code.
   # used with the original call to #authorize_url.
-  # Returns a hash containing the :access_token and the :expires_at timestamp
+  # Returns a hash containing the :token and the :expires_at timestamp
   def self.oauth_complete(code, redirect_uri)
     response = oauth_client.auth_code.get_token(code, :parse => :query, :redirect_uri => redirect_uri)
     { :token => response.token, :expires_at => response.expires_at }
