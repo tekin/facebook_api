@@ -44,11 +44,26 @@ class TestFacebookApi < Test::Unit::TestCase
       end
     end
 
-    context '#get_access_token' do
-      should 'make a request to retrieve the token' do
-        stub_request(:post, 'https://graph.facebook.com/oauth/access_token').to_return(:body => 'access_token=ACCESS_TOKEN_HERE', :headers => { :content_type => 'application/x-www-form-urlencoded'} )
-        assert_equal 'ACCESS_TOKEN_HERE', FacebookApi.get_access_token('CODE', 'REDIRECT_URI')
+    context '#oath_complete' do
+      setup do
+        stub_request(:post, 'https://graph.facebook.com/oauth/access_token').to_return(:body => 'access_token=ACCESS_TOKEN_HERE&expires_at=1234567890', :headers => { :content_type => 'application/x-www-form-urlencoded'} )
+        @result = FacebookApi.oauth_complete('CODE', 'REDIRECT_URI')
+      end
+      should 'make the correct call to complete OAuth' do
         assert_requested(:post, 'https://graph.facebook.com/oauth/access_token', :body => {:redirect_uri => 'REDIRECT_URI', :code => 'CODE', :client_secret => SECRET_KEY, :client_id => APP_ID, :grant_type => 'authorization_code'})
+      end
+      should 'return the access token' do
+        assert_equal 'ACCESS_TOKEN_HERE', @result[:token]
+      end
+      should 'return the expires timestamp' do
+        assert_equal '1234567890', @result[:expires_at]
+      end
+    end
+
+    context '#get_access_token' do
+      should 'return the token from the oauth_complete call' do
+        FacebookApi.expects(:oauth_complete).with('CODE', 'REDIRECT_URI').returns(:access_token => 'TOKEN_HERE')
+        assert_equal 'TOKEN_HERE', FacebookApi.get_access_token('CODE', 'REDIRECT_URI')
       end
     end
 

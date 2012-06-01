@@ -67,13 +67,20 @@ module FacebookApi
     oauth_client.auth_code.authorize_url(params.merge(:redirect_uri => redirect_uri))
   end
 
-  # Peforms the final step of OAuth2 authorization by retrieving the access token.
-  # call with the verification code returned by Facebook and the same redirect_uri
+
+  # Performs the final step of OAuth2 authorization by verifying the code.
   # used with the original call to #authorize_url.
-  # Returns an access_token
-  def self.get_access_token(code, redirect_uri)
+  # Returns a hash containing the :access_token and the :expires_at timestamp
+  def self.oauth_complete(code, redirect_uri)
     response = oauth_client.auth_code.get_token(code, :parse => :query, :redirect_uri => redirect_uri)
-    response.token
+    { :token => response.token, :expires_at => response.expires_at }
+  end
+
+  # Peforms the final step of OAuth2 authorization by retrieving the access token.
+  # used with the original call to #authorize_url.
+  # Returns an access_token string
+  def self.get_access_token(code, redirect_uri)
+    oauth_complete(code, redirect_uri)[:access_token]
   end
 
   def self.oauth_client
