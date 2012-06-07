@@ -3,18 +3,21 @@ require 'test_helper'
 class TestSession < Test::Unit::TestCase
   context 'A Facebook::Session instance' do
     setup do
-      @session = FacebookApi::Session.new('ACCESS_TOKEN', 'uid')
-    end
-
-    should 'have accessors for access_token and uid' do
-      assert_equal 'ACCESS_TOKEN', @session.access_token
-      assert_equal 'uid', @session.uid
-    end
-
-    should 'only optionally require a uid' do
       @session = FacebookApi::Session.new('ACCESS_TOKEN')
+    end
+
+    should 'have accessors for access_token' do
       assert_equal 'ACCESS_TOKEN', @session.access_token
-      assert_nil @session.uid
+    end
+
+    should 'have an optional uid accessor' do
+      @session = FacebookApi::Session.new('ACCESS_TOKEN', 'UID')
+      assert_equal 'UID', @session.uid
+    end
+
+    should 'have an optional expires_at accessor' do
+      @session = FacebookApi::Session.new('ACCESS_TOKEN', 'UID', 'EXPIRE_TIME')
+      assert_equal 'EXPIRE_TIME', @session.expires_at
     end
 
     should 'defer to the Facebook logger' do
