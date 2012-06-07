@@ -10,13 +10,8 @@ class TestSession < Test::Unit::TestCase
       assert_equal 'ACCESS_TOKEN', @session.access_token
     end
 
-    should 'have an optional uid accessor' do
-      @session = FacebookApi::Session.new('ACCESS_TOKEN', 'UID')
-      assert_equal 'UID', @session.uid
-    end
-
     should 'have an optional expires_at accessor' do
-      @session = FacebookApi::Session.new('ACCESS_TOKEN', 'UID', 'EXPIRE_TIME')
+      @session = FacebookApi::Session.new('ACCESS_TOKEN', 'EXPIRE_TIME')
       assert_equal 'EXPIRE_TIME', @session.expires_at
     end
 
