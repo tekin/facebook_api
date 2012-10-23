@@ -1,17 +1,17 @@
 module FacebookApi
-  # FacebookApi::Session is your window to the Facebook REST API. Once you have a 
+  # FacebookApi::Session is your window to the Facebook REST API. Once you have a
   # valid user access token, you can make API calls with #call and fql calls with #call_fql.
   #
   # Example usage:
   #
   #   session = FacebookApi::Session.new(access_token)
-  #   
+  #
   #   # Make REST API calls
   #   response = session.call('Friends.get', :uid => '12345')
   #   # Make calls with file attachments
   #   response = session.call('Photos.upload', {:uid => '12345', :aid => '67890', :caption => 'your caption'}, File.new('/path/to/image.jpg))
   #   # Make fql calls
-  #   response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"') 
+  #   response = session.call_fql('SELECT page_id FROM page_admin WHERE uid="12345"')
   #
   # The response from an API #call will usually be a hash, converted from the JSON
   # returned by Facebook. For some API calls however, Facebook returns literal
@@ -59,14 +59,14 @@ module FacebookApi
     # Returns the response from Facebook as either a hash, boolean or literal, depending on what Facebook returns.
     # Example:
     #
-    #   response = session.call('SELECT page_id FROM page_admin WHERE uid="12345"') 
+    #   response = session.call('SELECT page_id FROM page_admin WHERE uid="12345"')
     #
     # Raises FacebookApi::Error if Facebook returns with an error.
     def call_fql(query)
       call('Fql.query', :query => query)
     end
 
-    # Makes a call to the Facebook Graph API. 
+    # Makes a call to the Facebook Graph API.
     # Note: Experimental method, not for primetime
     def graph_get(path)
       response = RestClient.get("#{FacebookApi::GRAPH_URL}#{path}", :params => {:access_token => access_token})
@@ -85,7 +85,7 @@ module FacebookApi
     # Because Facebook does not always return valid JSON, we need to pre-parse it and catch
     # the special cases.
     # If the response is valid JSON, this returns the parsed response. Otherwise it catches
-    # "true", "false" and string letirals, returning true, false or the string respectively. 
+    # "true", "false" and string letirals, returning true, false or the string respectively.
     # Raises Facebook::APIError if the response from Facebook is an error message.
     def parse_facebook_json(response)
       body = response.body
@@ -98,7 +98,7 @@ module FacebookApi
       data
     end
 
-    private 
+    private
 
     def looks_like_json?(string)
       # If it starts with a '[' or a '{', then it looks like JSON to me.
