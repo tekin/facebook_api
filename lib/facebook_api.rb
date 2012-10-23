@@ -7,7 +7,7 @@ require 'oauth2'
 require 'facebook_api/session'
 
 module FacebookApi
-  
+
   class Configuration #:nodoc:
     attr_accessor :app_id, :api_key, :secret_key, :canvas_page_name, :callback_url
   end
@@ -41,7 +41,7 @@ module FacebookApi
 
   # Returns the secret key. set this with #configure.
   def self.secret_key
-    config.secret_key 
+    config.secret_key
   end
 
   # Allows you to set your Facebook configuration for accessing the REST API:
