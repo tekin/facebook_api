@@ -119,6 +119,13 @@ class TestSession < Test::Unit::TestCase
         assert_requested(:get, (FacebookApi::GRAPH_URL + 'me'), :query => { :access_token => 'ACCESS_TOKEN' })
         assert_equal ({"id" => "12354"}), response
       end
+
+      should 'accept optional parameters' do
+        stub_request(:get, (FacebookApi::GRAPH_URL + 'search')).with(:query => { :access_token => 'ACCESS_TOKEN', :q => 'search', :type => 'place'}).to_return(:body => '{"data": [ ]}')
+        response = @session.graph_get('search', :q => 'search', :type => 'place')
+        assert_requested(:get, (FacebookApi::GRAPH_URL + 'search'), :query => { :access_token => 'ACCESS_TOKEN', :q => 'search', :type => 'place'})
+        assert_equal ({"data" => []}), response
+      end
     end
   end
 end
